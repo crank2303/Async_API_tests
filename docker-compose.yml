@@ -1,0 +1,102 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:13-alpine3.17
+    container_name: PostgresDB
+    restart: on-failure
+    volumes:
+      - ./db/movies_database.sql:/docker-entrypoint-initdb.d/movies_database.sql
+      - postgres_volume:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    networks:
+      - async_API_sprint_1
+
+  movies_admin:
+    container_name: MoviesADMIN
+    build: ./movies_admin
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    env_file:
+      - .env
+    networks:
+      - async_API_sprint_1
+
+  movies_api:
+    container_name: FastAPI
+    build: ./fastapi-solution
+    expose:
+      - 8080
+    env_file:
+      - .env
+    networks:
+      - async_API_sprint_1
+
+  nginx:
+    container_name: Nginx
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    ports:
+      - "8082:80"
+    networks:
+      - async_API_sprint_1
+
+  elasticsearch:
+    container_name: Elasticsearch
+    image: docker.io/elastic/elasticsearch:7.17.5
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "xpack.security.enabled=false"
+      - "USE_SSL=false"
+    env_file:
+      - ./.env
+    expose:
+      - 9200
+    restart: unless-stopped
+    volumes:
+      - elasticsearch_volume:/var/lib/elasticsearch/data
+    networks:
+      - async_API_sprint_1
+
+  etl:
+    container_name: ETL
+    build: ./etl
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    networks:
+      - async_API_sprint_1
+
+  redis:
+    image: redis
+    container_name: Redis
+    restart: on-failure
+    volumes:
+      - redis_volume:/var/lib/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    expose:
+      - 6379
+    networks:
+      - async_API_sprint_1
+
+
+volumes:
+  postgres_volume:
+  static_volume:
+  media_volume:
+  elasticsearch_volume:
+  redis_volume:
+
+networks:
+  async_API_sprint_1:
