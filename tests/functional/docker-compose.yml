@@ -25,7 +25,7 @@ services:
     env_file:
       - ./.env
     expose:
-      - 9200
+      - "9200"
     restart: unless-stopped
     volumes:
       - elasticsearch_volume:/var/lib/elasticsearch/data
@@ -43,6 +43,14 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     expose:
       - "6379"
+    networks:
+      - async_API_sprint_2
+
+  tests:
+    container_name: test_fastapi
+    build: .
+    env_file:
+      - ./.env
     networks:
       - async_API_sprint_2
 

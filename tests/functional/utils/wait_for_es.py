@@ -1,10 +1,11 @@
+import os
 import backoff
 from elasticsearch import Elasticsearch
 
 
 @backoff.on_exception(backoff.expo, ConnectionError)
 def wait_elastic():
-    elastic = Elasticsearch(hosts=[f"elastic:9200"])
+    elastic = Elasticsearch(hosts=[os.environ.get("ES_URL")])
     ping = elastic.ping()
     if not ping:
         raise ConnectionError()
