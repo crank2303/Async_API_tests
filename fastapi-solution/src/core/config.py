@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     redis_cache_expire_seconds: int = Field(..., env='REDIS_CACHE_EXPIRE_SECONDS')
 
     class Config:
-        env_file = str(Path(__file__).parents[3]) + '/.env'
+        env_file = '.env'
         env_file_encoding = 'utf-8'
 
 

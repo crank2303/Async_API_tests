@@ -19,7 +19,8 @@ class PostgresExtractor:
         Returns:
             movies_modified_list(list): list with movies
         """
-        with contextlib.closing(psycopg2.connect(**settings.dsn.dict(), cursor_factory=DictCursor)) \
+        with contextlib.closing(psycopg2.connect(**settings.dsn.dict(),
+                                                 cursor_factory=DictCursor)) \
                 as conn, conn.cursor() as cursor:
             
             print(date)

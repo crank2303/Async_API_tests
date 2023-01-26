@@ -2,24 +2,13 @@ version: '3'
 
 services:
 
-  postgres:
-    image: postgres:13-alpine3.17
-    container_name: PostgresDB
-    restart: on-failure
-    volumes:
-      - postgres_volume:/var/lib/postgresql/data/
-    env_file:
-      - .env
-    networks:
-      - async_API_sprint_2
-
   movies_api:
     container_name: FastAPI
     build: ../../fastapi-solution
     ports:
-      - "8000:8000"
+      - "8082:8080"
     expose:
-      - "8000"
+      - "8082"
     env_file:
       - .env
     networks:
@@ -40,15 +29,6 @@ services:
     restart: unless-stopped
     volumes:
       - elasticsearch_volume:/var/lib/elasticsearch/data
-    networks:
-      - async_API_sprint_2
-
-  etl:
-    container_name: ETL
-    build: ../../etl
-    env_file:
-      - ./.env
-    restart: unless-stopped
     networks:
       - async_API_sprint_2
 
