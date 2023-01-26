@@ -24,6 +24,8 @@ services:
       - "USE_SSL=false"
     env_file:
       - ./.env
+    ports:
+      - "9200:9200"
     expose:
       - 9200
     restart: unless-stopped
