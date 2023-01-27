@@ -121,6 +121,38 @@ class PersonParams:
         self.size = size
         
 
+class GenreSearchParams:
+    def __init__(
+        self,
+        search_by_name: Optional[str] = Query(
+            '',
+            alias='search_by_name',
+            title='Поиск по наименованию',
+        description=(
+                'Ищет жанр по наименованию,'
+                ' предлагает релевантные результаты'
+                ),
+        ),
+        number: Optional[int] = Query(
+            1,
+            alias='page[number]',
+            title='страница',
+            description='Порядковый номер страницы результатов',
+            ge=1,
+        ),
+        size: Optional[int] = Query(
+            50,
+            alias='page[size]',
+            title='размер страницы',
+            description='Количество документов на странице',
+            ge=1,
+        )
+    ) -> None:
+        self.search_by_name = search_by_name
+        self.number = number
+        self.size = size
+
+
 class FilmSearchParams:
     def __init__(
         self,

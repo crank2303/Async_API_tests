@@ -3,9 +3,10 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncGenerator, Callable
 
+import aioredis
 import aiohttp
 import pytest_asyncio
-from aioredis import Redis, create_redis
+from aioredis import Redis
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 from multidict import CIMultiDictProxy
@@ -22,14 +23,15 @@ class HTTPResponse:
 
 @pytest_asyncio.fixture(scope='function')
 async def es_client() -> AsyncGenerator[AsyncElasticsearch, None]:
-    client = AsyncElasticsearch(hosts=f"{settings.es_url}", verify_certs=True)
+    client = AsyncElasticsearch(settings.es_url, verify_certs=True)
     yield client
     await client.close()
 
 
 @pytest_asyncio.fixture(scope='function')
 async def redis_client() -> AsyncGenerator[Redis, None]:
-    redis = await create_redis(address=f"redis://{settings.redis_url}")
+    redis = await aioredis.create_redis(f"redis://{settings.redis_url}")
+
     yield redis
     redis.close()
     await redis.wait_closed()
@@ -37,7 +39,7 @@ async def redis_client() -> AsyncGenerator[Redis, None]:
 
 @pytest_asyncio.fixture(scope='function')
 async def session() -> AsyncGenerator[aiohttp.ClientSession, None]:
-    session = aiohttp.ClientSession()
+    session = aiohttp.ClientSession(trust_env=True)
     yield session
     await session.close()
 
@@ -72,7 +74,7 @@ def send_data_to_elastic(es_client: AsyncElasticsearch, clear_cache: Callable):
 def make_get_request(session):
     async def inner(method: str, params: dict = None) -> HTTPResponse:
         params = params or {}
-        url = f'{settings.service_url}{method}'
+        url = f"{settings.service_url}{method}"
         async with session.get(url, params=params) as response:
             return HTTPResponse(
               body=await response.json(),

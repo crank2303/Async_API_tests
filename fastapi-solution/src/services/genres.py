@@ -40,12 +40,39 @@ class GenreService(ServiceMixin):
             return [Genre(**d['_source']) for d in doc['hits']['hits']]
         q = {}
         if params.sort:
-            q['sort'] = [{params.sort.replace('-','') : {'order': 'asc' if '-' in params.sort else 'desc'}}]
+            q['sort'] = [{params.sort.replace('-', ''): {
+                'order': 'asc' if '-' in params.sort else 'desc'}}]
 
         doc = await self.elastic.search(
             index=self._index_name,
             from_=(params.number - 1) * params.size, size=params.size,
-            body= q
+            body=q
+        )
+        return [Genre(**d['_source']) for d in doc['hits']['hits']]
+
+    async def get_search_list(self, params) -> Optional[list[Genre]]:
+        if params.search_by_name is None:
+            doc = await self.elastic.search(
+                index=self._index_name,
+                from_=(params.number - 1) * params.size, size=params.size
+            )
+            return [Genre(**d['_source']) for d in doc['hits']['hits']]
+        q = {
+            'query': {
+                'multi_match': {
+                    'query': params.search_by_name,
+                    'fuzziness': 'auto',
+                    'fields': [
+                        'name', 'description'
+                    ]
+                }
+            }
+        }
+        doc = await self.elastic.search(
+            index=self._index_name,
+            from_=(params.number - 1) * params.size,
+            size=params.size,
+            body=q
         )
         return [Genre(**d['_source']) for d in doc['hits']['hits']]
 
@@ -71,7 +98,7 @@ class GenreService(ServiceMixin):
 
 @lru_cache()
 def get_genre_service(
-    redis: Redis = Depends(get_redis),
-    elastic: AsyncElasticsearch = Depends(get_elastic),
+        redis: Redis = Depends(get_redis),
+        elastic: AsyncElasticsearch = Depends(get_elastic),
 ) -> GenreService:
     return GenreService(redis, elastic)

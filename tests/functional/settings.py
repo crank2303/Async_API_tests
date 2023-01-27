@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     ELASTIC_HOST = os.getenv("ELASTIC_HOST", "elasticsearch")
     ELASTIC_PORT = int(os.getenv("ELASTIC_PORT", "9200"))
 
+    API_HOST = os.getenv("API_HOST", "movies_api")
+    API_PORT = int(os.getenv("API_PORT", "8082"))
+
     es_url: str = os.environ.get("ES_URL", "elasticsearch:9200")
     redis_url: str = os.environ.get("REDIS_URL", "redis:6379")
     service_url: str = os.environ.get(
