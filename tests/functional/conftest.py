@@ -1,9 +1,11 @@
+import asyncio
 
 import pytest
 from typing import List
 import json
 from elasticsearch import AsyncElasticsearch
 import aiohttp
+import uuid
 
 
 @pytest.fixture(scope='session')
@@ -13,6 +15,16 @@ async def es_client():
                                 use_ssl=False)
     yield client
     await client.close()
+
+
+@pytest.fixture(scope='session')
+def event_loop():
+    policy = asyncio.get_event_loop_policy()
+    loop = policy.new_event_loop()
+    yield loop
+    loop.close()
+
+
 @pytest.fixture
 def es_write_data(es_client):
     async def inner(data: List[dict]):
@@ -46,3 +58,31 @@ def make_get_request(aiohttp_session):
             resp_dict['status'] = response.status
         return resp_dict
     return inner
+
+
+@pytest.fixture
+def es_data():
+    es_data = [{
+        'id': str(uuid.uuid4()),
+        'imdb_rating': 8.5,
+        'mpaa_rating': '12+',
+        'genre': [
+            {'name': 'Action', 'id': '12'},
+            {'name': 'Drama', 'id': '11'}
+        ],
+        'title': 'The Star',
+        'description': 'New World',
+        'director': [
+            {'id': '185', 'name': 'tom Cruz'}
+        ],
+        'actors': [
+            {'id': '548', 'name': 'Ann'},
+            {'id': '974', 'name': 'Bob'}
+        ],
+        'writers': [
+            {'id': '845', 'name': 'Ben'},
+            {'id': '564', 'name': 'Howard'}
+        ]
+    } for _ in range(60)]
+    return es_data
+
