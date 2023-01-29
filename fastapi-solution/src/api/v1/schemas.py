@@ -9,13 +9,8 @@ class FilmAPI(BaseModel):
     imdb_rating: str
 
 
-class PersonAPI(BaseModel):
-    id: str
-    full_name: str
-    role: str
-    film_ids: list[str]
-
-
 class FilmData(BaseModel):
-    role: str
-    films_list: list[FilmAPI]
+    films_actor: list[FilmAPI]
+    films_director: list[FilmAPI]
+    films_writer: list[FilmAPI]
+    

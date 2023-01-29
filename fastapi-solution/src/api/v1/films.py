@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Response
 
 from api.v1.utils import FilmParams, FilmSearchParams
 from api.v1.schemas import FilmAPI
@@ -45,7 +45,7 @@ async def get_search_films(
 ) -> list[Film]:
     es_films = await film_service.get_search_list(params)
     if not es_films:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=NO_FILMS)
+        return Response(content='[]', media_type="application/json")
     films = [FilmAPI(id=film.id,
                   title=film.title,
                   imdb_rating=film.imdb_rating) for film in es_films]
