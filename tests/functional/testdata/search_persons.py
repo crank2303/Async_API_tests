@@ -1,65 +1,163 @@
 import uuid
 import pytest
-import random
 
 
 def get_persons_es_data():
-    return [{
+    [{
         "index":'persons',
         "id": str(uuid.uuid4()),
-        "full_name": "Mat Lucas",
-        "film_ids_director": [str(uuid.uuid4) for film in range(random.randint(0,6))],
-        "film_ids_writer": [str(uuid.uuid4) for film in range(random.randint(0,6))],
-        "film_ids_actor": [str(uuid.uuid4) for film in range(random.randint(0,6))],
-    } for actor in range(60)
+        "full_name": "tom Cruz",
+        "film_ids_director": [
+                    'a08b62c3-ace0-45ce-9127-57a4b0a70178',
+                    'a5a6d2dc-1d3f-4324-b848-5df60218d419',
+                    'b26d8dac-eec3-46ff-b19e-20b909b706cc',
+                    '7773d331-07b1-41c9-8ba6-1e969c04143a',
+                    '9e072978-42b4-4280-b8c8-010b65348ce3',
+        ],
+        "film_ids_writer": [],
+        "film_ids_actor": [],
+    },
+    {
+        "index":'persons',
+        "id": str(uuid.uuid4()),
+        "full_name": "Ann",
+        "film_ids_director": [],
+        "film_ids_writer": [
+                    'a08b62c3-ace0-45ce-9127-57a4b0a70178',
+                    'a5a6d2dc-1d3f-4324-b848-5df60218d419',
+                    'b26d8dac-eec3-46ff-b19e-20b909b706cc',
+                    '7773d331-07b1-41c9-8ba6-1e969c04143a',
+                    '9e072978-42b4-4280-b8c8-010b65348ce3',
+        ],
+        "film_ids_actor": [],
+    },
+    {
+        "index":'persons',
+        "id": str(uuid.uuid4()),
+        "full_name": "Howard Truz",
+        "film_ids_director": ['a08b62c3-ace0-45ce-9127-57a4b0a70178',],
+        "film_ids_writer": [
+                    'a5a6d2dc-1d3f-4324-b848-5df60218d419',
+                    'b26d8dac-eec3-46ff-b19e-20b909b706cc',
+                    ],
+        "film_ids_actor": ['9e072978-42b4-4280-b8c8-010b65348ce3',],
+    },
     ]
 
-@pytest.fixture
-def list_person():
-    return [{
 
-        "id": "6dd77305-18ee-4d2e-9215-fd1a496ccfdf",
-        "full_name": "Mat Lucas",
-        "role": "actor",
-        "film_ids": [
-        "044beafe-fe25-4edc-95f4-adbb8979c35b",
-        "fdfc8266-5ece-4d85-b614-3cfe9be97b71"
+def get_film_es_data():
+    es_data = [{
+        'id': 'a08b62c3-ace0-45ce-9127-57a4b0a70178',
+        'imdb_rating': 8.5,
+        'mpaa_rating': '12+',
+        'genre': [
+            {'name': 'Action', 'id': '12'},
+            {'name': 'Drama', 'id': '11'}
+        ],
+        'title': 'The Star',
+        'description': 'New World',
+        'director': [
+            {'id': '185', 'name': 'tom Cruz'}
+        ],
+        'actors': [
+            {'id': '548', 'name': 'Ann'},
+            {'id': '974', 'name': 'Bob'}
+        ],
+        'writers': [
+            {'id': '845', 'name': 'Ben'},
+            {'id': '564', 'name': 'Howard'}
         ]
     },
-    {
-        "_index": "persons",
-        "_id": "3eca95e0-2c3d-4fe1-aef6-93a37678b369",
-        "id": "3eca95e0-2c3d-4fe1-aef6-93a37678b369",
-        "full_name": "Alan Ruck",
-        "role": "actor",
-        "film_ids": [
-        "d2d9b15d-a134-446a-af51-eb8c5207fd46"
-        ]
-    },
-    {
-        "_index": "persons",
-        "_id": "ae0113af-2b40-4578-a530-060be491d567",
-        "id": "ae0113af-2b40-4578-a530-060be491d567",
-        "full_name": "Luca Boni",
-        "role": "director",
-        "film_ids": [
-        "2ae92dcc-e043-4a0c-a2cd-6146650b3c71"
-        ]
-    }]
+        {
+            'id': 'a5a6d2dc-1d3f-4324-b848-5df60218d419',
+            'imdb_rating': 8.5,
+            'mpaa_rating': '12+',
+            'genre': [
+                {'name': 'Action', 'id': '12'},
+                {'name': 'Drama', 'id': '11'}
+            ],
+            'title': 'The Star 2',
+            'description': 'New World',
+            'director': [
+                {'id': '185', 'name': 'tom Cruz'}
+            ],
+            'actors': [
+                {'id': '548', 'name': 'Ann'},
+                {'id': '974', 'name': 'Bob'}
+            ],
+            'writers': [
+                {'id': '845', 'name': 'Ben'},
+                {'id': '564', 'name': 'Howard'}
+            ]
+        },
+        {
+            'id': 'b26d8dac-eec3-46ff-b19e-20b909b706cc',
+            'imdb_rating': 8.5,
+            'mpaa_rating': '12+',
+            'genre': [
+                {'name': 'Action', 'id': '12'},
+                {'name': 'Drama', 'id': '11'}
+            ],
+            'title': 'The Star 3',
+            'description': 'New World',
+            'director': [
+                {'id': '185', 'name': 'tom Cruz'}
+            ],
+            'actors': [
+                {'id': '548', 'name': 'Ann'},
+                {'id': '974', 'name': 'Bob'}
+            ],
+            'writers': [
+                {'id': '845', 'name': 'Ben'},
+                {'id': '564', 'name': 'Howard'}
+            ]
+        },
+        {
+            'id': '7773d331-07b1-41c9-8ba6-1e969c04143a',
+            'imdb_rating': 8.5,
+            'mpaa_rating': '12+',
+            'genre': [
+                {'name': 'Action', 'id': '12'},
+                {'name': 'Drama', 'id': '11'}
+            ],
+            'title': 'The Star 4',
+            'description': 'New World',
+            'director': [
+                {'id': '185', 'name': 'tom Cruz'}
+            ],
+            'actors': [
+                {'id': '548', 'name': 'Ann'},
+                {'id': '974', 'name': 'Bob'}
+            ],
+            'writers': [
+                {'id': '845', 'name': 'Ben'},
+                {'id': '564', 'name': 'Howard'}
+            ]
+        },
+        {
+            'id': '9e072978-42b4-4280-b8c8-010b65348ce3',
+            'imdb_rating': 8.5,
+            'mpaa_rating': '12+',
+            'genre': [
+                {'name': 'Action', 'id': '12'},
+                {'name': 'Drama', 'id': '11'}
+            ],
+            'title': 'The Star 5',
+            'description': 'New World',
+            'director': [
+                {'id': '185', 'name': 'tom Cruz'}
+            ],
+            'actors': [
+                {'id': '548', 'name': 'Ann'},
+                {'id': '974', 'name': 'Bob'}
+            ],
+            'writers': [
+                {'id': '845', 'name': 'Ben'},
+                {'id': '564', 'name': 'Howard'}
+            ]
+        }
+    ]
+    return es_data
 
-@pytest.fixture
-def person_expected():
-    return {
-        "id": "ae0113af-2b40-4578-a530-060be491d567",
-        "full_name": "Luca Boni",
-        "role": "director",
-        "film_ids": [
-        "2ae92dcc-e043-4a0c-a2cd-6146650b3c71"
-        ]
-    }
-
-@pytest.fixture
-def person_list_expected():
-    return 
 
 

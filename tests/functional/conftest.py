@@ -8,6 +8,9 @@ from typing import List
 from aiohttp.client import ClientSession
 from elasticsearch import AsyncElasticsearch
 
+from tests.functional.testdata.search_persons import get_persons_es_data, get_film_es_data
+
+
 
 @pytest.fixture(scope='session')
 async def es_client():
@@ -26,9 +29,8 @@ def event_loop():
 
 @pytest.fixture
 def es_write_data(es_client: AsyncElasticsearch):
-    #TODO доработать очистку индекса перед новой записью
-    async def inner(data: List[dict]):
-        bulk_query = get_query_data(data)
+    async def inner(_index: str, data: List[dict]):
+        bulk_query = get_query_data(_index, data)
         str_query = '\n'.join(bulk_query) + '\n'
 
         response = await es_client.bulk(str_query, refresh=True)
@@ -38,11 +40,11 @@ def es_write_data(es_client: AsyncElasticsearch):
     return inner
 
 
-def get_query_data(data: List[dict]):
+def get_query_data(_index: str, data: List[dict]):
     bulk_query = []
     for row in data:
         bulk_query.extend([
-            json.dumps({'index':{'_index':row['index'], 
+            json.dumps({'index':{'_index':_index, 
             '_id':str(row['id'])}}),
             json.dumps(row)
         ])
@@ -66,3 +68,13 @@ async def aio_client():
     client = aiohttp.ClientSession()
     yield client
     await client.close()
+
+
+@pytest.fixture(scope='session', autouse=True)
+async def fill_data():
+    index_dict = {
+        'movies': get_film_es_data,
+        'persons': get_persons_es_data
+    }
+    for _index, data in index_dict.items():
+        await es_write_data(_index, data)

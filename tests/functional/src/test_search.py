@@ -1,14 +1,5 @@
-import datetime
-import uuid
-import json
-
-import aiohttp
 import pytest
 
-from elasticsearch import AsyncElasticsearch
-
-from tests.functional.testdata.search_films import get_films_es_data
-from tests.functional.testdata.search_persons import get_persons_es_data
 from tests.functional.settings import settings
 
 
@@ -30,10 +21,7 @@ from tests.functional.settings import settings
     ]
 )
 @pytest.mark.asyncio
-async def test_search_films(es_write_data, make_get_request, query_data, expected_answer):
-    es_data = get_films_es_data()
-
-    await es_write_data(es_data)
+async def test_search_films(make_get_request, query_data, expected_answer):
 
     url = settings.SERVICE_URL + '/api/v1/films/search'
 
@@ -47,8 +35,8 @@ async def test_search_films(es_write_data, make_get_request, query_data, expecte
     'query_data, expected_answer',
     [
         (
-            {'search_by_title': 'Mat Luc'},#TODO переделать имя поля для поиска + описание + убрать разибите на отдельные роли
-            {'status': 200, 'length': 50}
+            {'search_by_title': 'Anna'},
+            {'status': 200, 'length': 1}
         ),
         (
             {'search_by_title': 'Mashed patato'},
@@ -61,10 +49,7 @@ async def test_search_films(es_write_data, make_get_request, query_data, expecte
     ]
 )
 @pytest.mark.asyncio
-async def test_search_persons(es_write_data, make_get_request, query_data, expected_answer):
-    es_data = get_persons_es_data()
-
-    await es_write_data(es_data)
+async def test_search_persons(make_get_request, query_data, expected_answer):
 
     url = settings.SERVICE_URL + '/api/v1/persons/search'
 
