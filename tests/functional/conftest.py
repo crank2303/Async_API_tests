@@ -11,15 +11,7 @@ from elasticsearch import AsyncElasticsearch
 from tests.functional.testdata.search_persons import get_persons_es_data, get_film_es_data
 
 
-@pytest.fixture(autouse=True)
-async def fill_data(es_write_data):
-    index_dict = {
-        'movies': get_film_es_data(),
-        'persons': get_persons_es_data()
-    }
-    print(index_dict)
-    for _index, data in index_dict.items():
-        await es_write_data(_index, data)
+
 
 
 @pytest.fixture(scope='session')
@@ -83,3 +75,12 @@ def make_get_request(aio_client:ClientSession):
             resp_dict['status'] = response.status
         return resp_dict
     return inner
+
+@pytest.fixture(autouse=True)
+async def fill_data(es_write_data):
+    index_dict = {
+        'movies': get_film_es_data(),
+        'persons': get_persons_es_data()
+    }
+    for _index, data in index_dict.items():
+        await es_write_data(_index, data)

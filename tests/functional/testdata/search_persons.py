@@ -5,7 +5,7 @@ import pytest
 def get_persons_es_data():
    es_data = [{
         "index":'persons',
-        "id": str(uuid.uuid4()),
+        "id": 'a08b62c3-a9e0-45ce-9127-574b0xa70178',
         "full_name": "tom Cruz",
         "film_ids_director": [
                     'a08b62c3-ace0-45ce-9127-57a4b0a70178',
@@ -19,7 +19,7 @@ def get_persons_es_data():
     },
     {
         "index":'persons',
-        "id": str(uuid.uuid4()),
+        "id": 'mhfd8dac-eec3-46ff-b19e-20b909b706cc',
         "full_name": "Ann",
         "film_ids_director": [],
         "film_ids_writer": [
@@ -32,7 +32,7 @@ def get_persons_es_data():
     },
     {
         "index":'persons',
-        "id": str(uuid.uuid4()),
+        "id": '9e072978-90b4-4330-b8c8-010b65348ce3',
         "full_name": "Howard Truz",
         "film_ids_director": ['a08b62c3-ace0-45ce-9127-57a4b0a70178',],
         "film_ids_writer": [

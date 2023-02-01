@@ -40,7 +40,7 @@ async def test_search_films(make_get_request, query_data, expected_answer):
     [
         (
             {'search_by_title': 'Ann'},
-            {'status': 200, 'length': 2}
+            {'status': 200, 'length': 1}
         ),
         (
             {'search_by_title': 'Mashed patato'},
@@ -64,4 +64,4 @@ async def test_search_persons(make_get_request, query_data, expected_answer):
     request = await make_get_request(url, query_data)
 
     assert request['status'] == expected_answer['status']
-    assert len(request) == expected_answer['length']
+    assert len(request['body']) == expected_answer['length']
