@@ -1,3 +1,4 @@
+import os
 import json
 
 from elasticsearch import Elasticsearch
@@ -27,6 +28,7 @@ genres = [
         "modified": "2023-01-01T00:00:00.309836+00:00",
     },
 ]
+
 persons = [
     {
         "id": "4a416628-4a36-431c-9121-513674dae840",
@@ -90,7 +92,7 @@ def data_for_elastic() -> str:
 
 
 def main():
-    es_client = Elasticsearch(f"localhost:9200")  # TODO Заменить на ос
+    es_client = Elasticsearch(os.environ.get("ES_URL"))
     for index in INDEXES:
         if not es_client.es.indices.exists(index=index):
             es_client.es.indices.create(index=index, body=INDEXES[index])

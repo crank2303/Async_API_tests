@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from api.v1.utils import GenreParams
+from api.v1.utils import GenreParams, GenreSearchParams
 from api.v1.contstants import NO_GENRES, GENRE_NOT_FOUND
 from models.genre import Genre
 from services.genres import GenreService, get_genre_service
@@ -26,6 +26,27 @@ async def get_genres(
     es_genres = await genre_service.get_list(params)
     if not es_genres:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=NO_GENRES)
+    genres = [Genre(id=genre.id,
+                    name=genre.name,
+                    description=genre.description) for genre in es_genres]
+    return genres
+
+
+@router.get(
+    path='/search',
+    response_model=list[Genre],
+    summary='Поиск по названию',
+    description='Поиск по названию жанра',
+    response_description='Список релевантных результатов',
+)
+async def get_search_persons(
+        params: GenreSearchParams = Depends(),
+        genre_service: GenreService = Depends(get_genre_service),
+) -> list[Genre]:
+    es_genres = await genre_service.get_search_list(params)
+    if not es_genres:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=NO_GENRES)
+
     genres = [Genre(id=genre.id,
                     name=genre.name,
                     description=genre.description) for genre in es_genres]

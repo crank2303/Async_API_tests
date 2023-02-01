@@ -1,3 +1,4 @@
+import os
 import asyncio
 from socket import gaierror
 
@@ -7,7 +8,7 @@ import backoff
 
 @backoff.on_exception(backoff.expo, gaierror)
 async def wait_redis():
-    redis = await aioredis.create_connection(("redis", 6379))
+    redis = await aioredis.create_connection(os.environ.get("REDIS_URL"))
     redis.close()
 
 
