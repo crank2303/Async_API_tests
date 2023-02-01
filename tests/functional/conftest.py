@@ -11,10 +11,32 @@ from elasticsearch import AsyncElasticsearch
 from tests.functional.testdata.search_persons import get_persons_es_data, get_film_es_data
 
 
+@pytest.fixture(autouse=True)
+async def fill_data(es_write_data):
+    index_dict = {
+        'movies': get_film_es_data(),
+        'persons': get_persons_es_data()
+    }
+    print(index_dict)
+    for _index, data in index_dict.items():
+        await es_write_data(_index, data)
+
 
 @pytest.fixture(scope='session')
 async def es_client():
     client = AsyncElasticsearch(hosts='127.0.0.1:9200') # TODO сделать привязку к переменной окружения
+    yield client
+    #TODO подумать как сделать красивее
+    if await client.indices.exists(index='movies'):
+       await client.indices.delete(index='movies')
+    if await client.indices.exists(index='persons'):
+       await client.indices.delete(index='persons')
+    await client.close()
+
+
+@pytest.fixture(scope='session')
+async def aio_client():
+    client = aiohttp.ClientSession()
     yield client
     await client.close()
 
@@ -61,20 +83,3 @@ def make_get_request(aio_client:ClientSession):
             resp_dict['status'] = response.status
         return resp_dict
     return inner
-
-
-@pytest.fixture(scope='session')
-async def aio_client():
-    client = aiohttp.ClientSession()
-    yield client
-    await client.close()
-
-
-@pytest.fixture(scope='session', autouse=True)
-async def fill_data():
-    index_dict = {
-        'movies': get_film_es_data,
-        'persons': get_persons_es_data
-    }
-    for _index, data in index_dict.items():
-        await es_write_data(_index, data)

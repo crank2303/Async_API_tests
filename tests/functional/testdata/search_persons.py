@@ -3,7 +3,7 @@ import pytest
 
 
 def get_persons_es_data():
-    [{
+   es_data = [{
         "index":'persons',
         "id": str(uuid.uuid4()),
         "full_name": "tom Cruz",
@@ -26,8 +26,7 @@ def get_persons_es_data():
                     'a08b62c3-ace0-45ce-9127-57a4b0a70178',
                     'a5a6d2dc-1d3f-4324-b848-5df60218d419',
                     'b26d8dac-eec3-46ff-b19e-20b909b706cc',
-                    '7773d331-07b1-41c9-8ba6-1e969c04143a',
-                    '9e072978-42b4-4280-b8c8-010b65348ce3',
+
         ],
         "film_ids_actor": [],
     },
@@ -43,6 +42,7 @@ def get_persons_es_data():
         "film_ids_actor": ['9e072978-42b4-4280-b8c8-010b65348ce3',],
     },
     ]
+   return es_data
 
 
 def get_film_es_data():
