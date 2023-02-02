@@ -53,6 +53,15 @@ def es_write_data(es_client: AsyncElasticsearch):
             raise Exception('Ошибка записи данных в Elasticsearch')
     return inner
 
+@pytest.fixture
+def es_drop_record(es_client:AsyncElasticsearch):
+    async def inner(_index:str, id):
+        response = await es_client.delete(index=_index, id=id)
+
+        if response['errors']:
+            raise Exception('Ошибка удаления данных в Elasticsearch')
+    return inner
+        
 
 def get_query_data(_index: str, data: List[dict]):
     bulk_query = []

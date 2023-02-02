@@ -71,10 +71,6 @@ async def test_persons_uuid(make_get_request, query_data, expected_answer):
             '9e072978-90b4-4330-b8c8-010b65348ce3',
             {'status': 200, 'films_actor': 1, 'films_director': 1, 'films_writer':2}
         ),
-        (
-            '1',
-            {'status': 200, 'films_actor': 0, 'films_director': 0, 'films_writer':0}
-        ),
     ]
 )
 @pytest.mark.asyncio
@@ -89,4 +85,28 @@ async def test_persons_uuid_film(make_get_request, query_data, expected_answer):
     assert len(request['body'][0]['films_director']) == expected_answer['films_director']
     assert len(request['body'][0]['films_writer']) == expected_answer['films_writer']
 
-    
+
+@pytest.mark.asyncio   
+async def test_persons_uuid_film_empty(make_get_request):
+
+    url = f'{settings.SERVICE_URL}/api/v1/persons/1/film'
+
+    request = await make_get_request(url, {})
+
+    assert request['status'] == 200
+    assert len(request['body']) == 0
+
+
+@pytest.mark.asyncio
+async def test_persons_uuid_cache(make_get_request, es_drop_record):
+
+    url = f'{settings.SERVICE_URL}/api/v1/persons/mhfd8dac-eec3-46ff-b19e-20b909b706cc'
+
+    request = await make_get_request(url, {})
+
+    es_drop_record('persons', 'mhfd8dac-eec3-46ff-b19e-20b909b706cc')
+
+    request = await make_get_request(url, {})
+
+    assert request['status'] == 200
+    assert len(request['body']) == 5
