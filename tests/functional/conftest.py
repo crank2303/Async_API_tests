@@ -26,6 +26,13 @@ async def es_delete_index():
     await client.indices.delete(index='movies')
     await client.indices.delete(index='genres')
     await client.indices.delete(index='persons')
+    
+    
+@pytest.fixture()
+def es_create_index(es_client):
+    async def inner(name_of_index: str, index_body: dict):
+        await es_client.indices.create(index=name_of_index, body=index_body)
+    return inner
 
 
 @pytest.fixture(scope='session')
