@@ -1,4 +1,5 @@
 import aiohttp
+import aioredis
 import pytest
 import json
 import asyncio
@@ -93,3 +94,25 @@ async def fill_data(es_write_data):
     }
     for _index, data in index_dict.items():
         await es_write_data(_index, data)
+
+@pytest.fixture(scope='session')
+async def redis_client():
+    redis = await aioredis.create_redis(f"redis://localhost")
+    yield redis
+    redis.close()
+    await redis.wait_closed()
+
+
+@pytest.fixture
+def clear_cache(redis_client):
+    async def inner() -> None:
+        await redis_client.flushall(async_op=True)
+    return inner
+
+
+@pytest.fixture
+def get_redis(redis_client):
+    async def inner(ids):
+        value = await redis_client.get(ids)
+        return value
+    return inner
