@@ -8,11 +8,10 @@ from typing import List
 
 from aiohttp.client import ClientSession
 from elasticsearch import AsyncElasticsearch
+from aioredis import Redis
 
 from tests.functional.testdata.search_persons import get_persons_es_data, get_film_es_data
-
-
-
+from tests.functional.testdata.genres import genre_list
 
 
 @pytest.fixture(scope='session')
@@ -24,6 +23,8 @@ async def es_client():
        await client.indices.delete(index='movies')
     if await client.indices.exists(index='persons'):
        await client.indices.delete(index='persons')
+    if await client.indices.exists(index='genres'):
+       await client.indices.delete(index='genres')   
     await client.close()
 
 
@@ -32,6 +33,12 @@ async def aio_client():
     client = aiohttp.ClientSession()
     yield client
     await client.close()
+
+@pytest.fixture
+async def clear_cache(redis_client: Redis):
+    async def inner() -> None:
+        await redis_client.flushall(async_op=True)
+    return inner
 
 
 @pytest.fixture(scope='session')
@@ -90,7 +97,8 @@ def make_get_request(aio_client:ClientSession):
 async def fill_data(es_write_data):
     index_dict = {
         'movies': get_film_es_data(),
-        'persons': get_persons_es_data()
+        'persons': get_persons_es_data(),
+        'genres': genre_list()
     }
     for _index, data in index_dict.items():
         await es_write_data(_index, data)
