@@ -1,33 +1,38 @@
-# Проектная работа 4 спринта
-Вводная часть
+# Проектная работа 5 спринта
+Тестирование endpoint'ов FastAPI
 
-# Описание проекта
-Краткое описание проекта
 
-# Документация API
-Надо решить: OpenAPI или Wiki.js
-
-# Технологии
+# Технологии для тестов
 - Код приложения на Python + FastAPI;
 - Приложение запускается под управлением сервера ASGI(uvicorn);
-- База данных: PostgresSQL;
+- Функциональные тесты реализованы с помощью pytest;
 - Хранилище данных: ElasticSearch;
 - Кеширование данных: Redis Cluster;
-- Все компоненты системы запускаются через Docker.
+- Redis и ElasticSearch запускаются через Docker.
 
 # Как развернуть проект
 
 Склонируйте репозиторий
 ```
-git clone git@github.com:crank2303/4_sprint_15_team.git
+git clone git@github.com:crank2303/Async_API_sprint_2.git
 ```
 
 Перейдите в каталог с проектом
 ```
-cd 4_sprint_15_team
+cd Async_API_sprint_2
 ```
 
-Скопируйте файл настроек окружения
+Скопируйте файл настроек окружения проекта
+```
+cp .env.example .env
+```
+
+Перейдите в каталог с тестами
+```
+cd tests/functional
+```
+
+Скопируйте файл настроек окружения для тестов
 ```
 cp .env.example .env
 ```
@@ -39,15 +44,10 @@ docker compose up -d --build
 <br>
 <hr>
 
-# Админка и API
-Для доступа в админку перейдите по адресу: 
-Локально: <a href="http://localhost:8082/admin">http://localhost:8082/admin
-Через Интернет: <a href="http://movies.house-me.ru/admin">http://lmovies.house-me.ru/admin
-```
-Логин: admin
-Пароль: admin
-```
-
-Описание параметров эндроинтов доступно по адресу: 
-Локально: <a href="http://localhost:8082/api/openapi">http://localhost:8082/api/openapi
-Через Интернет: <a href="http://movies.house-me.ru/api/openapi">http://lmovies.house-me.ru/api/openapi
+# Запуск тестов
+<ul>
+  <li>Тесты запускаются локально</li>
+  <li>Установить интерпретатор, виртуальное окружение</li>
+  <li>Установить модули из файла Async_API_sprint_2/tests/functional/requirements.txt</li>
+  <li>Запустить тесты из каталога Async_API_sprint_2/tests/functional/src/</li>
+</ul>
