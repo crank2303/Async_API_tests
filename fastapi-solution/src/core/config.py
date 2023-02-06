@@ -7,12 +7,12 @@ from core.logger import LOGGING
 
 
 class Settings(BaseSettings):
-    redis_host: str = Field(..., env='REDIS_HOST')
-    redis_port: int = Field(..., env='REDIS_PORT')
-    project_name: str = Field(..., env='PROJECT_NAME')
-    elastic_host: str = Field(..., env='ELASTIC_HOST')
-    elastic_port: int = Field(..., env='ELASTIC_PORT')
-    redis_cache_expire_seconds: int = Field(..., env='REDIS_CACHE_EXPIRE_SECONDS')
+    redis_host: str = Field('127.0.0.1', env='REDIS_HOST')
+    redis_port: int = Field(6379, env='REDIS_PORT')
+    project_name: str = Field('movies', env='PROJECT_NAME')
+    elastic_host: str = Field('127.0.0.1', env='ELASTIC_HOST')
+    elastic_port: int = Field(9200, env='ELASTIC_PORT')
+    redis_cache_expire_seconds: int = Field(300, env='REDIS_CACHE_EXPIRE_SECONDS')
 
     class Config:
         env_file = '.env'

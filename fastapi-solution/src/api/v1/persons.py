@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Optional
+from typing import Optional,Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -107,11 +107,15 @@ async def person_films(
 
     person_roles: Person = await person_details(uuid, person_service) 
     role_films = {}
+    if isinstance(person_roles, Response):
+        return Response(content='[]', media_type="application/json")
+
     films = {
         'actor': person_roles.film_ids_actor,
         'director': person_roles.film_ids_director,
         'writer': person_roles.film_ids_writer,
     }
+    
 
     for role, film_list in films.items() :
         films_info = await get_film_info(film_list, film_service)
