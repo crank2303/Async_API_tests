@@ -5,7 +5,7 @@ import aioredis
 import backoff
 
 
-@backoff.on_exception(backoff.expo, gaierror)
+@backoff.on_exception(backoff.expo, gaierror, max_tries=7)
 async def wait_redis():
     redis = await aioredis.create_connection(("redis", 6379))
     redis.close()
