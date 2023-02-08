@@ -1,9 +1,11 @@
 import json
 
 from elasticsearch import Elasticsearch
-from es_schemas.genre_schema import SCHEMA as GENRES_INDEX_BODY
+
 from es_schemas.filmwork_schema import SCHEMA as FILMWORKS_INDEX_BODY
+from es_schemas.genre_schema import SCHEMA as GENRES_INDEX_BODY
 from es_schemas.person_schema import SCHEMA as PERSONS_INDEX_BODY
+from tests.functional.settings import settings
 
 INDEXES = {
     "persons": PERSONS_INDEX_BODY,
@@ -90,11 +92,10 @@ def data_for_elastic() -> str:
 
 
 def main():
-    es_client = Elasticsearch(f"localhost:9200")  # TODO Заменить на ос
+    es_client = Elasticsearch(f"{settings.ELASTIC_HOST}:{settings.ELASTIC_PORT}")
     for index in INDEXES:
         if not es_client.es.indices.exists(index=index):
             es_client.es.indices.create(index=index, body=INDEXES[index])
-
     index_data = {"movies": movies, "genres": genres, "persons": persons}
     for index, data in index_data.items():
         for d in data:

@@ -2,7 +2,7 @@ import backoff
 from elasticsearch import Elasticsearch
 
 
-@backoff.on_exception(backoff.expo, ConnectionError)
+@backoff.on_exception(backoff.expo, ConnectionError, max_tries=7)
 def wait_elastic():
     elastic = Elasticsearch(hosts=[f"elastic:9200"])
     ping = elastic.ping()
